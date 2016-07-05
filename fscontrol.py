@@ -1,11 +1,12 @@
+#!/usr/bin/env python2
 import socket
 outSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 outSock.connect(("127.0.0.1", 3332))
 serversocket = socket.socket(
             socket.AF_INET, socket.SOCK_STREAM)
+serversocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 serversocket.bind(('0.0.0.0', 4242))
 serversocket.listen(5)
-data = ""
 while 1:
     print "waiting for connection"
     (clientsocket, address) = serversocket.accept()
@@ -21,17 +22,9 @@ while 1:
             print "lost connection"
             break
         print "read: " + read
-        data += read
-        print 'Data: ' + data
-        splitted = data.split("b")
+        splitted = read.split("\n")
         print splitted
-        #for line in splitted:
-        #
         for line in splitted:
-            data = ''
-        #if len(splitted) == 2:
-        #    data = splitted[1]
-        #    line = splitted[0]
             try:
                 num = int(line)
             except ValueError:
